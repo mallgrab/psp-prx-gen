@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CLionExternalBuildManager">
+    <target id="f0b5dae5-8ef6-49a8-9512-b8d770cbcf3e" name="Unnamed" defaultType="MAKE">
+      <configuration id="beb25913-9917-4a33-9331-c49a15551c82" name="Unnamed">
+        <build type="MAKE">
+          <make targetName="prxtool" />
+        </build>
+        <clean type="MAKE">
+          <make targetName="clean" />
+        </clean>
+      </configuration>
+    </target>
+  </component>
+</project>
