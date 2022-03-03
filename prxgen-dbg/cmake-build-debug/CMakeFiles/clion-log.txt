@@ -1,0 +1,4 @@
+/home/user/Applications/clion/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/user/Applications/clion/bin/ninja/linux/ninja -DCMAKE_C_COMPILER=/usr/bin/gcc -DCMAKE_CXX_COMPILER=/usr/bin/g++ -G Ninja /home/user/Projects/psp-prx-dbg/prxgen-dbg
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/user/Projects/psp-prx-dbg/prxgen-dbg/cmake-build-debug
