@@ -35,7 +35,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-g -gdwarf-3"
+					"fragment" : " -gdwarf-3"
 				},
 				{
 					"fragment" : "-std=gnu17"
@@ -62,7 +62,7 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "-g -gdwarf-3",
+				"fragment" : "-gdwarf-3",
 				"role" : "flags"
 			},
 			{

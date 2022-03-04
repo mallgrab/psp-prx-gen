@@ -199,10 +199,10 @@ typedef struct {
 	Elf32_Addr sh_addr; // where it appears in memory
 	Elf32_Off sh_offset; // offset from the elf file
 	Elf32_Word sh_size; // how big it is inside of the elf file
-	Elf32_Word sh_link; 
-	Elf32_Word sh_info; 
-	Elf32_Word sh_addralign; 
-	Elf32_Word sh_entsize; // how many entries inside of a section
+	Elf32_Word sh_link; // Lk, we aren't linking to the symtab, why?
+	Elf32_Word sh_info; // Inf 
+	Elf32_Word sh_addralign; // Al
+	Elf32_Word sh_entsize; // ES, how many entries inside of a section
 } __attribute__((packed)) Elf32_Shdr;
 
 // Program header

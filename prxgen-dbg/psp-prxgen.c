@@ -292,6 +292,7 @@ int load_sections(unsigned char *data)
 			    if (i >= 1)
 			        g_elfsections[i].blOutput = 1;
 
+				// is this true for every rel section? might cause the issue that sh_info is being set because pRef is only being set once
 				if(((g_elfsections[i].iType == SHT_REL) || (g_elfsections[i].iType == SHT_PRXRELOC))
 						&& (g_elfsections[g_elfsections[i].iInfo].iFlags & SHF_ALLOC))
 				{
@@ -767,10 +768,15 @@ void output_sh(unsigned char *data)
 			SW(&shdr->sh_flags, g_elfsections[i].iFlags);
 			SW(&shdr->sh_addr, g_elfsections[i].iAddr);
 			SW(&shdr->sh_size, g_elfsections[i].iSize);
-			SW(&shdr->sh_link, 0);
+			SW(&shdr->sh_link, 0); 	// Why aren't we linking to symtab? 
+									// Maybe not an issue, only rel sections are setting their index link to symtab.
 			SW(&shdr->sh_addralign, g_elfsections[i].iAddralign);
 			SW(&shdr->sh_entsize, g_elfsections[i].iEntsize);
+			// sh_info is also set to 0 could maybe be an issue?
+			// prxgen atleast doesn't use it for anything, but gdb/profiler might not like it
 
+			// TODO:
+			// Check if sh_offset is growing since our debug sections don't seem to have their offset increase
 			if((g_elfsections[i].iType == SHT_REL) || (g_elfsections[i].iType == SHT_PRXRELOC))
 			{
 				SW(&shdr->sh_type, SHT_PRXRELOC);

@@ -42,7 +42,7 @@ rule C_EXECUTABLE_LINKER__prxgen_Debug
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /home/user/Applications/clion/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/user/Projects/psp-prx-dbg/prxgen-dbg -B/home/user/Projects/psp-prx-dbg/prxgen-dbg/cmake-build-debug
+  command = /home/user/Applications/clion/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/user/Projects/psp-prx-gen/prxgen-dbg -B/home/user/Projects/psp-prx-gen/prxgen-dbg/cmake-build-debug
   description = Re-running CMake...
   generator = 1
 

@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "prxgen::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-prxgen-Debug-ce0ca721818450b487c4.json",
+					"jsonFile" : "target-prxgen-Debug-f49e6554897251b73470.json",
 					"name" : "prxgen",
 					"projectIndex" : 0
 				}
@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/user/Projects/psp-prx-dbg/prxgen-dbg/cmake-build-debug",
-		"source" : "/home/user/Projects/psp-prx-dbg/prxgen-dbg"
+		"build" : "/home/user/Projects/psp-prx-gen/prxgen-dbg/cmake-build-debug",
+		"source" : "/home/user/Projects/psp-prx-gen/prxgen-dbg"
 	},
 	"version" : 
 	{
