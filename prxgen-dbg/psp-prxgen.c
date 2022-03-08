@@ -765,6 +765,12 @@ void output_sh(unsigned char *data)
 	reloc_ofs = g_relocbase;
 	str_ofs = 1;
 
+    unsigned int index_of_symtab;
+
+    for(i=0; i < g_elfhead.iShnum; i++)
+        if(g_elfsections[i].iType == SHT_SYMTAB)
+            index_of_symtab = i-2;
+
 	for(i = 1; i < g_elfhead.iShnum; i++)
 	{
 		if(g_elfsections[i].blOutput)
@@ -791,6 +797,8 @@ void output_sh(unsigned char *data)
 				else
 					SW(&shdr->sh_info, 0);
 				SW(&shdr->sh_offset, reloc_ofs);
+                SW(&shdr->sh_link, index_of_symtab); // TODO: this is going to require some further inspection could be that its not correct
+                                                     // after the prx is created since sections move in the index
 				reloc_ofs += g_elfsections[i].iSize;
 			}
 			else if(g_elfsections[i].iType == SHT_PROGBITS)
