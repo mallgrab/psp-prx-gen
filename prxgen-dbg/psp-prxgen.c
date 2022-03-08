@@ -834,28 +834,30 @@ void output_relocs(unsigned char *data)
 
 	for(i = 0; i < g_elfhead.iShnum; i++)
 	{
-		if((g_elfsections[i].blOutput) &&
-				((g_elfsections[i].iType == SHT_REL) || (g_elfsections[i].iType == SHT_PRXRELOC)))
-		{
-			Elf32_Rel *rel;
-			int j, count;
+        if (g_elfsections[i].blOutput)
+        {
+            if((g_elfsections[i].iType == SHT_REL) || (g_elfsections[i].iType == SHT_PRXRELOC))
+            {
+                Elf32_Rel *rel;
+                int j, count;
 
-			memcpy(pReloc, g_elfsections[i].pData, g_elfsections[i].iSize);
-			rel = (Elf32_Rel*) pReloc;
-			count = g_elfsections[i].iSize / sizeof(Elf32_Rel);
-			for(j = 0; j < count; j++)
-			{
-				unsigned int sym;
+                memcpy(pReloc, g_elfsections[i].pData, g_elfsections[i].iSize);
+                rel = (Elf32_Rel*) pReloc;
+                count = g_elfsections[i].iSize / sizeof(Elf32_Rel);
+                for(j = 0; j < count; j++)
+                {
+                    unsigned int sym;
 
-				/* Clear the top 24bits of the info */
-				/* Kind of a dirty trick but hey :P */
-				sym = LW(rel->r_info);
-				sym &= 0xFF;
-				SW(&rel->r_info, sym);
-				rel++;
-			}
-			pReloc += g_elfsections[i].iSize;
-		}
+                    /* Clear the top 24bits of the info */
+                    /* Kind of a dirty trick but hey :P */
+                    sym = LW(rel->r_info);
+                    sym &= 0xFF;
+                    SW(&rel->r_info, sym);
+                    rel++;
+                }
+                pReloc += g_elfsections[i].iSize;
+            }
+        }
 	}
 }
 
