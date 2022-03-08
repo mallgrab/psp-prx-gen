@@ -730,7 +730,7 @@ void output_ph(unsigned char *data)
 	}
 	SW(&phdr->p_filesz, g_alloc_size);
 	SW(&phdr->p_memsz, g_mem_size);
-	SW(&phdr->p_flags, 5); // read & execute ?
+	SW(&phdr->p_flags, 7); // read & execute ? // changed it from 5 to 7 since its 0x7 on devkit prx's
 	SW(&phdr->p_align, 0x10); // must be atleast aligned to 16 byte boundaries
                               // otherwise the kernel ELF loader will fail
 }
