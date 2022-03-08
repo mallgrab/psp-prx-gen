@@ -493,6 +493,8 @@ int process_relocs(void)
 			struct ElfSection *pReloc;
 
 			pReloc = &g_elfsections[i];
+            // TODO:
+            // could this cause issues for symtab?
 			if((pReloc->iLink < g_elfhead.iShnum) && (g_elfsections[pReloc->iLink].iType == SHT_SYMTAB))
 			{
 				struct ElfSection *pStrings = NULL;
