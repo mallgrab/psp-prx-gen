@@ -314,7 +314,10 @@ int load_sections(unsigned char *data)
 					g_elfsections[i].blOutput = 0;
 				}
 
-			}
+                // we are already constructing a new string tab because we are moving around sections
+                if (strcmp(g_elfsections[i].szName, ELF_SH_STRTAB) == 0)
+                    g_elfsections[i].blOutput = 0;
+            }
 
 			if(g_verbose)
 			{
