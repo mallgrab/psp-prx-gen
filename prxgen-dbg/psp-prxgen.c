@@ -293,9 +293,9 @@ int load_sections(unsigned char *data)
 			        g_elfsections[i].blOutput = 1;
 
 				// is this true for every rel section? might cause the issue that sh_info is being set because pRef is only being set once
-				if(((g_elfsections[i].iType == SHT_REL) || (g_elfsections[i].iType == SHT_PRXRELOC))
-						&& (g_elfsections[g_elfsections[i].iInfo].iFlags & SHF_ALLOC))
-				{
+				//if(((g_elfsections[i].iType == SHT_REL) || (g_elfsections[i].iType == SHT_PRXRELOC)) && (g_elfsections[g_elfsections[i].iInfo].iFlags & SHF_ALLOC))
+                if((g_elfsections[i].iType == SHT_REL) || (g_elfsections[i].iType == SHT_PRXRELOC))
+                {
 					g_elfsections[i].pRef = &g_elfsections[g_elfsections[i].iInfo];
 					found_rel = 1;
 					g_elfsections[i].blOutput = 1;
