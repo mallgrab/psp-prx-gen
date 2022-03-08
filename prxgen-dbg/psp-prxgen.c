@@ -301,8 +301,10 @@ int load_sections(unsigned char *data)
 					g_elfsections[i].blOutput = 1;
 				}
 
+                // give every section their names from their section table
 				strcpy(g_elfsections[i].szName, (char *) (g_elfsections[g_elfhead.iShstrndx].pData + g_elfsections[i].iName));
-				if(strcmp(g_elfsections[i].szName, PSP_MODULE_INFO_NAME) == 0)
+
+                if(strcmp(g_elfsections[i].szName, PSP_MODULE_INFO_NAME) == 0)
 				{
 					g_modinfo = &g_elfsections[i];
 				}
