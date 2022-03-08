@@ -601,6 +601,7 @@ int calculate_outsize(void)
 
 				top_addr = g_elfsections[i].iAddr + g_elfsections[i].iSize;
 
+                // if a section has a higher address than alloc_size, increase alloc_size
 				if(top_addr > alloc_size)
 				{
 					alloc_size = top_addr;
