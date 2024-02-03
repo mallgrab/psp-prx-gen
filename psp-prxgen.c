@@ -55,6 +55,8 @@ static int g_shbase = 0;
 static int g_relocbase = 0;
 static int g_shstrbase = 0;
 
+static int g_progbits_that_have_zero_addr_size = 0;
+static int g_top_addr = 0;
 static int g_debugbase = 0;
 static int g_debug_size = 0;
 static int g_symbol_size = 0;
@@ -572,6 +574,17 @@ int calculate_outsize(void)
 					mem_size = top_addr;
 				}
 
+				// some progbit sections have their address set to 0, allocate section size
+				// we will put them into the correct offset later
+				if (g_elfsections[i].iAddr == 0 && (strcmp(g_elfsections[i].szName, ".text") != 0))
+				{
+					if(g_verbose)
+						printf("set %s fakeRel on\n", g_elfsections[i].szName);
+					
+					g_elfsections[i].fakeRel = 1;
+					g_progbits_that_have_zero_addr_size += g_elfsections[i].iSize;
+				}
+
 				str_size += strlen(g_elfsections[i].szName) + 1;
 			}
 			else if((g_elfsections[i].iType == SHT_REL) || (g_elfsections[i].iType == SHT_PRXRELOC))
@@ -652,7 +665,7 @@ int calculate_outsize(void)
 		printf("Total size %d\n", g_shstrbase + g_str_size);
 	}
 
-	return (g_shstrbase + g_str_size + g_debug_size + g_symbol_size);
+	return (g_shstrbase + g_str_size + g_debug_size + g_symbol_size + g_progbits_that_have_zero_addr_size);
 }
 
 /* Output the ELF header */
