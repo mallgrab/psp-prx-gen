@@ -170,6 +170,7 @@ typedef u32 Elf32_Word;
 #define PT_HIPROC 		0x7fffffff
 
 // Elf header
+#pragma pack(1)
 typedef struct { 
 	Elf32_Word e_magic;
 	u8 e_class;
@@ -189,9 +190,12 @@ typedef struct {
 	Elf32_Half e_shentsize; // size of each section header
 	Elf32_Half e_shnum; // number of section headers
 	Elf32_Half e_shstrndx; // section header string table index
-} __attribute__((packed)) Elf32_Ehdr;
+//} __attribute__((packed)) Elf32_Ehdr;
+} Elf32_Ehdr;
+#pragma pack()
 
 // Section header
+#pragma pack(1)
 typedef struct { 
 	Elf32_Word sh_name; 
 	Elf32_Word sh_type; 
@@ -203,7 +207,9 @@ typedef struct {
 	Elf32_Word sh_info; // Inf 
 	Elf32_Word sh_addralign; // Al
 	Elf32_Word sh_entsize; // ES, how many entries inside of a section
-} __attribute__((packed)) Elf32_Shdr;
+//} __attribute__((packed)) Elf32_Shdr;
+} Elf32_Shdr;
+#pragma pack()
 
 // Program header
 // each segment has a program header, program headers initially were called segment headers
@@ -228,6 +234,7 @@ typedef struct {
 	Elf32_Word r_info; 
 } Elf32_Rel;
 
+#pragma pack(1)
 typedef struct { 
 	Elf32_Word st_name; 
 	Elf32_Addr st_value; 
@@ -235,7 +242,9 @@ typedef struct {
 	unsigned char st_info; 
 	unsigned char st_other; 
 	Elf32_Half st_shndx; 
-} __attribute__((packed)) Elf32_Sym;
+//} __attribute__((packed)) Elf32_Sym;
+} Elf32_Sym;
+#pragma pack()
 
 #define STB_LOCAL 0
 #define STB_GLOBAL 1
