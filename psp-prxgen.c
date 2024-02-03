@@ -612,11 +612,12 @@ int calculate_outsize(void)
 	str_size += strlen(ELF_SH_STRTAB) + 1;
 
 	if(g_verbose)
+	{
 		fprintf(stderr, "Out_sects %d, alloc_size %d, reloc_size %d, str_size %d, mem_size %d\n",
 				out_sects, alloc_size, reloc_size, str_size, mem_size);
 
-	if(g_verbose)
 		printf("total_size_of_all_sections: %d\n", total_size_of_all_sections);
+	}
 
 	/* Save them for future use */
 	g_out_sects = out_sects;
