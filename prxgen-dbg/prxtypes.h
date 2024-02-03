@@ -38,13 +38,16 @@ enum PspEntryType
 /* Define the in-prx structure types */
 
 /* Structure to hold the module export information */
+#pragma pack(1)
 struct PspModuleExport
 {
 	u32 name;
 	u32 flags;
 	u32 counts;
 	u32 exports;
-} __attribute__((packed));
+//} __attribute__((packed));
+};
+#pragma pack()
 
 /* Structure to hold the module import information */
 struct PspModuleImport
