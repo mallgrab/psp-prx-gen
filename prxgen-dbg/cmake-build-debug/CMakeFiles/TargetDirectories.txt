@@ -1,3 +1,0 @@
-/home/user/Projects/psp-prx-gen/prxgen-dbg/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/user/Projects/psp-prx-gen/prxgen-dbg/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/user/Projects/psp-prx-gen/prxgen-dbg/cmake-build-debug/CMakeFiles/prxgen.dir
