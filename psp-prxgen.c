@@ -935,8 +935,10 @@ void output_debug(unsigned char *data)
 
 				if (g_elfsections[i].iType == SHT_MIPS_DWARF)
 				{
-					printf("%s got memset to 0\n", g_elfsections[i].szName);
-					memcpy(pDebug, g_elfsections[i].pData, g_elfsections[i].iSize);
+					if (g_verbose)
+                        printf("%s got memset to 0\n", g_elfsections[i].szName);
+
+                    memcpy(pDebug, g_elfsections[i].pData, g_elfsections[i].iSize);
 				}
 
 				// debug_info is in a different format properly, since the devkit properly wants it in darwf 1 and not darwf 2
