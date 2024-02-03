@@ -53,6 +53,9 @@ struct ElfSection
 	struct ElfSection *pRef;
 	/* Indicates if this section is to be outputted */
 	int blOutput;
+
+    // !HACK Allocate this as if its a rel
+    int fakeRel;
 };
 
 struct ElfProgram
