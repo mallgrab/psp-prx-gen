@@ -943,7 +943,7 @@ void output_shstrtab(unsigned char *data)
 	{
 		if(g_elfsections[i].blOutput)
 		{
-			if(1)
+			if(g_verbose)
 			{
 				fprintf(stderr, "String %d: %s\n", i, g_elfsections[i].szName);
 			}
