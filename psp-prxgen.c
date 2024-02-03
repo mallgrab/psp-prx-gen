@@ -243,23 +243,23 @@ int load_sections(unsigned char *data)
 			// .debug_info isn't getting allocated properly.
 			for(i = 0; i < g_elfhead.iShnum; i++)
 			{
-			    // avoid including NULL section
-			    if (i >= 1)
-			        g_elfsections[i].blOutput = 1;
+				// avoid including NULL section
+				if (i >= 1)
+					g_elfsections[i].blOutput = 1;
 
 				// is this true for every rel section? might cause the issue that sh_info is being set because pRef is only being set once
 				//if(((g_elfsections[i].iType == SHT_REL) || (g_elfsections[i].iType == SHT_PRXRELOC)) && (g_elfsections[g_elfsections[i].iInfo].iFlags & SHF_ALLOC))
-                if((g_elfsections[i].iType == SHT_REL) || (g_elfsections[i].iType == SHT_PRXRELOC))
-                {
+				if((g_elfsections[i].iType == SHT_REL) || (g_elfsections[i].iType == SHT_PRXRELOC))
+				{
 					g_elfsections[i].pRef = &g_elfsections[g_elfsections[i].iInfo];
 					found_rel = 1;
 					g_elfsections[i].blOutput = 1;
 				}
 
-                // give every section their names from their section table
+				// give every section their names from their section table
 				strcpy(g_elfsections[i].szName, (char *) (g_elfsections[g_elfhead.iShstrndx].pData + g_elfsections[i].iName));
 
-                if(strcmp(g_elfsections[i].szName, PSP_MODULE_INFO_NAME) == 0)
+				if(strcmp(g_elfsections[i].szName, PSP_MODULE_INFO_NAME) == 0)
 				{
 					g_modinfo = &g_elfsections[i];
 				}
@@ -269,10 +269,10 @@ int load_sections(unsigned char *data)
 					g_elfsections[i].blOutput = 0;
 				}
 
-                // we are already constructing a new string tab because we are moving around sections
-                if (strcmp(g_elfsections[i].szName, ELF_SH_STRTAB) == 0)
-                    g_elfsections[i].blOutput = 0;
-            }
+				// we are already constructing a new string tab because we are moving around sections
+				if (strcmp(g_elfsections[i].szName, ELF_SH_STRTAB) == 0)
+					g_elfsections[i].blOutput = 0;
+			}
 
 			if(g_verbose)
 			{
@@ -448,8 +448,8 @@ int process_relocs(void)
 			struct ElfSection *pReloc;
 
 			pReloc = &g_elfsections[i];
-            // TODO:
-            // could this cause issues for symtab?
+			// TODO:
+			// could this cause issues for symtab?
 			if((pReloc->iLink < g_elfhead.iShnum) && (g_elfsections[pReloc->iLink].iType == SHT_SYMTAB))
 			{
 				struct ElfSection *pStrings = NULL;
@@ -542,8 +542,8 @@ int calculate_outsize(void)
 	int str_size = 1;
 	int i;
 
-    int total_size_of_all_sections = 0;
-    int total_size_of_symbol_and_string_section = 0;
+	int total_size_of_all_sections = 0;
+	int total_size_of_symbol_and_string_section = 0;
 
 	/* Calculate how big our output file needs to be */
 	/* We have elf header + 1 PH + allocated data + section headers + relocation data */
@@ -561,7 +561,7 @@ int calculate_outsize(void)
 
 				top_addr = g_elfsections[i].iAddr + g_elfsections[i].iSize;
 
-                // if a section has a higher address than alloc_size, increase alloc_size
+				// if a section has a higher address than alloc_size, increase alloc_size
 				if(top_addr > alloc_size)
 				{
 					alloc_size = top_addr;
@@ -593,12 +593,12 @@ int calculate_outsize(void)
 				str_size += strlen(g_elfsections[i].szName) + 1;
 			}
 
-            printf("%d, alloc_size: %04x\n", i, alloc_size);
-            if (g_elfsections[i].iType == SHT_MIPS_DWARF)
-                total_size_of_all_sections += g_elfsections[i].iSize;
+			printf("%d, alloc_size: %04x\n", i, alloc_size);
+			if (g_elfsections[i].iType == SHT_MIPS_DWARF)
+				total_size_of_all_sections += g_elfsections[i].iSize;
 
-            if ((g_elfsections[i].iType == SHT_STRTAB) || (g_elfsections[i].iType == SHT_SYMTAB))
-                total_size_of_symbol_and_string_section += g_elfsections[i].iSize;
+			if ((g_elfsections[i].iType == SHT_STRTAB) || (g_elfsections[i].iType == SHT_SYMTAB))
+				total_size_of_symbol_and_string_section += g_elfsections[i].iSize;
 
 			out_sects++;
 		}
@@ -615,7 +615,7 @@ int calculate_outsize(void)
 				out_sects, alloc_size, reloc_size, str_size, mem_size);
 	}
 
-    printf("total_size_of_all_sections: %d\n", total_size_of_all_sections);
+	printf("total_size_of_all_sections: %d\n", total_size_of_all_sections);
 
 	/* Save them for future use */
 	g_out_sects = out_sects;
@@ -624,30 +624,30 @@ int calculate_outsize(void)
 	g_mem_size = mem_size;
 	g_str_size = str_size;
 
-    // this probably isnt the correct size we will see
-    // we aren't also including section headers per dwarf section, could be that its already being allocated for
-    // we are also not allocating for
-    g_debug_size = total_size_of_all_sections;
-    g_symbol_size = total_size_of_symbol_and_string_section;
+	// this probably isnt the correct size we will see
+	// we aren't also including section headers per dwarf section, could be that its already being allocated for
+	// we are also not allocating for
+	g_debug_size = total_size_of_all_sections;
+	g_symbol_size = total_size_of_symbol_and_string_section;
 
 	/* Lets build the offsets */
 	g_phbase = sizeof(Elf32_Ehdr);
 
 	// when we are allocating sections for dwarf & symtab etc they are getting overwritten by the base addresses
-    // we should actually create our own allocation base for dwarf and friends so that we aren't being overwritten
-    // debug_info for example contains the section of shstrtab since its defining its own base
-    g_allocbase = (g_phbase + sizeof(Elf32_Shdr) + 0xF) & ~0xF; /* The allocated data needs to be 16 byte aligned */
+	// we should actually create our own allocation base for dwarf and friends so that we aren't being overwritten
+	// debug_info for example contains the section of shstrtab since its defining its own base
+	g_allocbase = (g_phbase + sizeof(Elf32_Shdr) + 0xF) & ~0xF; /* The allocated data needs to be 16 byte aligned */
 	g_shbase = g_allocbase + g_alloc_size;
 	g_relocbase = g_shbase + (g_out_sects * sizeof(Elf32_Shdr));
 	g_shstrbase = g_relocbase + g_reloc_size;
 
-    g_debugbase = g_shstrbase + g_str_size;
+	g_debugbase = g_shstrbase + g_str_size;
 
 	if(1)
 	{
 		printf("PHBase %08X, AllocBase %08X, SHBase %08X\n", g_phbase, g_allocbase, g_shbase);
-        printf("Relocbase %08X, Shstrbase %08X\n", g_relocbase, g_shstrbase);
-        printf("Total size %d\n", g_shstrbase + g_str_size);
+		printf("Relocbase %08X, Shstrbase %08X\n", g_relocbase, g_shstrbase);
+		printf("Total size %d\n", g_shstrbase + g_str_size);
 	}
 
 	return (g_shstrbase + g_str_size + g_debug_size + g_symbol_size);
@@ -682,7 +682,7 @@ void output_header(unsigned char *data)
 /* Output the program header */
 void output_ph(unsigned char *data)
 {
-    // atleast one prgraom header has to exist in order to be loadable, because of relocation entries
+	// atleast one prgraom header has to exist in order to be loadable, because of relocation entries
 
 	Elf32_Phdr *phdr;
 	struct PspModuleInfo *pModinfo;
@@ -697,10 +697,10 @@ void output_ph(unsigned char *data)
 	SW(&phdr->p_offset, g_allocbase);
 	SW(&phdr->p_vaddr, 0);
 
-    // physical address is not used like its described in the ELF documentation.
-    // physical address is instead set to the offset of .rodata_sceModuleInfo
-    // it is not the address in memory.
-    // any subsequent program header has the physical address set to 0.
+	// physical address is not used like its described in the ELF documentation.
+	// physical address is instead set to the offset of .rodata_sceModuleInfo
+	// it is not the address in memory.
+	// any subsequent program header has the physical address set to 0.
 	if(mod_flags & 0x1000) /* Check if this is a kernel module */
 	{
 		SW(&phdr->p_paddr, 0x80000000 | (g_modinfo->iAddr + g_allocbase));
@@ -713,7 +713,7 @@ void output_ph(unsigned char *data)
 	SW(&phdr->p_memsz, g_mem_size);
 	SW(&phdr->p_flags, 7); // read & execute ? // changed it from 5 to 7 since its 0x7 on devkit prx's
 	SW(&phdr->p_align, 0x10); // must be atleast aligned to 16 byte boundaries
-                              // otherwise the kernel ELF loader will fail
+	// otherwise the kernel ELF loader will fail
 }
 
 /* Output the allocated sections */
@@ -734,7 +734,7 @@ void output_alloc(unsigned char *data)
 void output_sh(unsigned char *data)
 {
 	unsigned int reloc_ofs;
-    unsigned int debug_ofs;
+	unsigned int debug_ofs;
 	unsigned int str_ofs;
 	Elf32_Shdr *shdr;
 	int i;
@@ -745,14 +745,14 @@ void output_sh(unsigned char *data)
 	memset(data, 0, g_out_sects * sizeof(Elf32_Shdr));
 
 	reloc_ofs = g_relocbase;
-    debug_ofs = g_debugbase;
+	debug_ofs = g_debugbase;
 	str_ofs = 1;
 
-    unsigned int index_of_symtab;
+	unsigned int index_of_symtab;
 
-    for(i=0; i < g_elfhead.iShnum; i++)
-        if(g_elfsections[i].iType == SHT_SYMTAB)
-            index_of_symtab = i-2;
+	for(i=0; i < g_elfhead.iShnum; i++)
+		if(g_elfsections[i].iType == SHT_SYMTAB)
+			index_of_symtab = i-2;
 
 	for(i = 1; i < g_elfhead.iShnum; i++)
 	{
@@ -765,68 +765,68 @@ void output_sh(unsigned char *data)
 			SW(&shdr->sh_size, g_elfsections[i].iSize);
 
 			SW(&shdr->sh_link, g_elfsections[i].iLink);
-            //SW(&shdr->sh_link, 0);
+			//SW(&shdr->sh_link, 0);
 
 			SW(&shdr->sh_addralign, g_elfsections[i].iAddralign);
 			SW(&shdr->sh_entsize, g_elfsections[i].iEntsize);
 
 			if((g_elfsections[i].iType == SHT_REL) || (g_elfsections[i].iType == SHT_PRXRELOC))
 			{
-                if (strstr(g_elfsections[i].szName, "debug"))
-                    SW(&shdr->sh_type, SHT_REL);
-                else
-                    SW(&shdr->sh_type, SHT_PRXRELOC);
+				if (strstr(g_elfsections[i].szName, "debug") || strstr(g_elfsections[i].szName, ".rel.line"))
+					SW(&shdr->sh_type, SHT_REL);
+				else
+					SW(&shdr->sh_type, SHT_PRXRELOC);
 
-                // turn this off once we converted debug_info from dwarf 2 to dwarf 1
-                if (strcmp(g_elfsections[i].szName, ".rel.debug_info") == 0)
-				    SW(&shdr->sh_type, SHT_PRXRELOC);
+				// turn this off once we converted debug_info from dwarf 2 to dwarf 1
+				//if (strcmp(g_elfsections[i].szName, ".rel.debug_info") == 0)
+				//    SW(&shdr->sh_type, SHT_PRXRELOC);
 
 				if (g_elfsections[i].pRef)
 					SW(&shdr->sh_info, g_elfsections[i].pRef->iIndex);
 				else
 					SW(&shdr->sh_info, 0);
 				SW(&shdr->sh_offset, reloc_ofs);
-                SW(&shdr->sh_link, index_of_symtab); // TODO: this is going to require some further inspection could be that its not correct
-                                                     // after the prx is created since sections move in the index
+				SW(&shdr->sh_link, index_of_symtab); // TODO: this is going to require some further inspection could be that its not correct
+				// after the prx is created since sections move in the index
 				reloc_ofs += g_elfsections[i].iSize;
 			}
 			else if(g_elfsections[i].iType == SHT_PROGBITS)
 			{
-                // sbss bss and comment don't have an address and are instead using offset as their address
-                // problem is that progbits only sets the offset to the section address
-                // which makes it write the content into the wrong offset
+				// sbss bss and comment don't have an address and are instead using offset as their address
+				// problem is that progbits only sets the offset to the section address
+				// which makes it write the content into the wrong offset
 
-                // we could make a simple hack where we check for sections that arent .text then place them at the offset
-                // do the same thing that we are doing with the dwarf sections
+				// we could make a simple hack where we check for sections that arent .text then place them at the offset
+				// do the same thing that we are doing with the dwarf sections
 				SW(&shdr->sh_type, g_elfsections[i].iType);
 				SW(&shdr->sh_info, 0);
 				SW(&shdr->sh_offset, g_allocbase + g_elfsections[i].iAddr);
-                if (g_elfsections[i].iAddr == 0)
-                    printf("fix this: %s, isnt being allocated properly in the prx, wrong offset!!!\n", g_elfsections[i].szName);
+				if (g_elfsections[i].iAddr == 0)
+					printf("fix this: %s, isnt being allocated properly in the prx, wrong offset!!!\n", g_elfsections[i].szName);
 			}
-            else if((g_elfsections[i].iType == SHT_MIPS_DWARF) || (strcmp(g_elfsections[i].szName, ".strtab") == 0))
-            {
-                SW(&shdr->sh_type, g_elfsections[i].iType);
-                SW(&shdr->sh_info, 0);
+			else if((g_elfsections[i].iType == SHT_MIPS_DWARF) || (strcmp(g_elfsections[i].szName, ".strtab") == 0))
+			{
+				SW(&shdr->sh_type, g_elfsections[i].iType);
+				SW(&shdr->sh_info, 0);
 
-                SW(&shdr->sh_offset, debug_ofs);
-                debug_ofs += g_elfsections[i].iSize;
-            }
-            // symtab seems to not be correct, both ghidra and the devkit cant seem to understand them
-            else if(g_elfsections[i].iType == SHT_SYMTAB)
-            {
-                SW(&shdr->sh_type, g_elfsections[i].iType);
-                SW(&shdr->sh_info, 0);
-                SW(&shdr->sh_link, i-1); // Hack!! we should do another for loop to see where strtab is at then set sh_link to it
-                //SW(&shdr->sh_info, g_elfsections[i].iInfo); // why is this set to 0xEE ?
-                // apparently the devkit prx sets iInfo to 0, no clue
+				SW(&shdr->sh_offset, debug_ofs);
+				debug_ofs += g_elfsections[i].iSize;
+			}
+				// symtab seems to not be correct, both ghidra and the devkit cant seem to understand them
+			else if(g_elfsections[i].iType == SHT_SYMTAB)
+			{
+				SW(&shdr->sh_type, g_elfsections[i].iType);
+				SW(&shdr->sh_info, 0);
+				SW(&shdr->sh_link, i-1); // Hack!! we should do another for loop to see where strtab is at then set sh_link to it
+				//SW(&shdr->sh_info, g_elfsections[i].iInfo); // why is this set to 0xEE ?
+				// apparently the devkit prx sets iInfo to 0, no clue
 
-                SW(&shdr->sh_offset, debug_ofs);
-                debug_ofs += g_elfsections[i].iSize;
-            }
+				SW(&shdr->sh_offset, debug_ofs);
+				debug_ofs += g_elfsections[i].iSize;
+			}
 			else
 			{
-                printf("fix this: %s, isnt being allocated properly in the prx!!!\n", g_elfsections[i].szName);
+				printf("fix this: %s, isnt being allocated properly in the prx!!!\n", g_elfsections[i].szName);
 				SW(&shdr->sh_type, g_elfsections[i].iType);
 				SW(&shdr->sh_info, 0);
 				/* Point it to the end of the allocated section */
@@ -860,71 +860,71 @@ void output_relocs(unsigned char *data)
 
 	for(i = 0; i < g_elfhead.iShnum; i++)
 	{
-        if (g_elfsections[i].blOutput)
-        {
-            if((g_elfsections[i].iType == SHT_REL) || (g_elfsections[i].iType == SHT_PRXRELOC))
-            {
-                Elf32_Rel *rel;
-                int j, count;
+		if (g_elfsections[i].blOutput)
+		{
+			if((g_elfsections[i].iType == SHT_REL) || (g_elfsections[i].iType == SHT_PRXRELOC))
+			{
+				Elf32_Rel *rel;
+				int j, count;
 
-                memcpy(pReloc, g_elfsections[i].pData, g_elfsections[i].iSize);
-                rel = (Elf32_Rel*) pReloc;
-                count = g_elfsections[i].iSize / sizeof(Elf32_Rel);
-                for(j = 0; j < count; j++)
-                {
-                    unsigned int sym;
+				memcpy(pReloc, g_elfsections[i].pData, g_elfsections[i].iSize);
+				rel = (Elf32_Rel*) pReloc;
+				count = g_elfsections[i].iSize / sizeof(Elf32_Rel);
+				for(j = 0; j < count; j++)
+				{
+					unsigned int sym;
 
-                    /* Clear the top 24bits of the info */
-                    /* Kind of a dirty trick but hey :P */
-                    sym = LW(rel->r_info);
-                    sym &= 0xFF;
-                    SW(&rel->r_info, sym);
-                    rel++;
-                }
-                pReloc += g_elfsections[i].iSize;
-            }
-        }
+					/* Clear the top 24bits of the info */
+					/* Kind of a dirty trick but hey :P */
+					sym = LW(rel->r_info);
+					sym &= 0xFF;
+					SW(&rel->r_info, sym);
+					rel++;
+				}
+				pReloc += g_elfsections[i].iSize;
+			}
+		}
 	}
 }
 
 void output_debug(unsigned char *data)
 {
-    int i;
-    unsigned char *pDebug;
+	int i;
+	unsigned char *pDebug;
 
-    pDebug = data;
+	pDebug = data;
 
-    for(i = 0; i < g_elfhead.iShnum; i++)
-    {
-        if (g_elfsections[i].blOutput)
-        {
-            // we don't need to do the relocation stuff on the dwarf sections
-            if ((g_elfsections[i].iType == SHT_MIPS_DWARF) || (g_elfsections[i].iType == SHT_SYMTAB) || (strcmp(g_elfsections[i].szName, ".strtab") == 0))
-            {
-                memset(pDebug, 0, g_elfsections[i].iSize);
-                memcpy(pDebug, g_elfsections[i].pData, g_elfsections[i].iSize);
+	for(i = 0; i < g_elfhead.iShnum; i++)
+	{
+		if (g_elfsections[i].blOutput)
+		{
+			// we don't need to do the relocation stuff on the dwarf sections
+			if ((g_elfsections[i].iType == SHT_MIPS_DWARF) || (g_elfsections[i].iType == SHT_SYMTAB) || (strcmp(g_elfsections[i].szName, ".strtab") == 0))
+			{
+				memset(pDebug, 0, g_elfsections[i].iSize);
+				memcpy(pDebug, g_elfsections[i].pData, g_elfsections[i].iSize);
 
-                if (g_elfsections[i].iType == SHT_MIPS_DWARF)
-                {
-                    printf("%s got memset to 0\n", g_elfsections[i].szName);
-                    memcpy(pDebug, g_elfsections[i].pData, g_elfsections[i].iSize);
-                }
+				if (g_elfsections[i].iType == SHT_MIPS_DWARF)
+				{
+					printf("%s got memset to 0\n", g_elfsections[i].szName);
+					memcpy(pDebug, g_elfsections[i].pData, g_elfsections[i].iSize);
+				}
 
-                // debug_info is in a different format properly, since the devkit properly wants it in darwf 1 and not darwf 2
-                // remove this later once we got it properly converted
-                //if (strcmp(g_elfsections[i].szName, ".debug_info") == 0)
-                //    memset(pDebug, 0, g_elfsections[i].iSize);
+				// debug_info is in a different format properly, since the devkit properly wants it in darwf 1 and not darwf 2
+				// remove this later once we got it properly converted
+				//if (strcmp(g_elfsections[i].szName, ".debug_info") == 0)
+				//    memset(pDebug, 0, g_elfsections[i].iSize);
 
-                if (g_elfsections[i].iType == SHT_SYMTAB)
-                {
-                    memset(pDebug, 0, g_elfsections[i].iSize);
-                    memcpy(pDebug, g_elfsections[i].pData, g_elfsections[i].iSize);
-                }
+				if (g_elfsections[i].iType == SHT_SYMTAB)
+				{
+					memset(pDebug, 0, g_elfsections[i].iSize);
+					memcpy(pDebug, g_elfsections[i].pData, g_elfsections[i].iSize);
+				}
 
-                pDebug += g_elfsections[i].iSize;
-            }
-        }
-    }
+				pDebug += g_elfsections[i].iSize;
+			}
+		}
+	}
 }
 
 /* Output the section header string table */
@@ -978,7 +978,7 @@ int output_prx(const char *prxfile)
 		output_alloc(data + g_allocbase);
 		output_sh(data + g_shbase);
 		output_relocs(data + g_relocbase);
-        output_debug(data + g_debugbase);
+		output_debug(data + g_debugbase);
 		output_shstrtab(data + g_shstrbase);
 
 		fp = fopen(prxfile, "wb");
