@@ -592,8 +592,10 @@ int calculate_outsize(void)
 
 				str_size += strlen(g_elfsections[i].szName) + 1;
 			}
-
-			printf("%d, alloc_size: %04x\n", i, alloc_size);
+			
+			if(g_verbose)
+				printf("%d, alloc_size: %04x\n", i, alloc_size);
+			
 			if (g_elfsections[i].iType == SHT_MIPS_DWARF)
 				total_size_of_all_sections += g_elfsections[i].iSize;
 
@@ -610,12 +612,11 @@ int calculate_outsize(void)
 	str_size += strlen(ELF_SH_STRTAB) + 1;
 
 	if(g_verbose)
-	{
 		fprintf(stderr, "Out_sects %d, alloc_size %d, reloc_size %d, str_size %d, mem_size %d\n",
 				out_sects, alloc_size, reloc_size, str_size, mem_size);
-	}
 
-	printf("total_size_of_all_sections: %d\n", total_size_of_all_sections);
+	if(g_verbose)
+		printf("total_size_of_all_sections: %d\n", total_size_of_all_sections);
 
 	/* Save them for future use */
 	g_out_sects = out_sects;
@@ -643,7 +644,7 @@ int calculate_outsize(void)
 
 	g_debugbase = g_shstrbase + g_str_size;
 
-	if(1)
+	if(g_verbose)
 	{
 		printf("PHBase %08X, AllocBase %08X, SHBase %08X\n", g_phbase, g_allocbase, g_shbase);
 		printf("Relocbase %08X, Shstrbase %08X\n", g_relocbase, g_shstrbase);
