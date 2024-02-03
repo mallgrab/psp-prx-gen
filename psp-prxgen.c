@@ -10,12 +10,9 @@
  */
 
 #include <stdio.h>
-#include <getopt.h>
 #include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <assert.h>
-#include <ctype.h>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -64,52 +61,6 @@ static int g_symbol_size = 0;
 
 /* Specifies that the current usage is to the print the pspsdk path */
 static int g_verbose = 0;
-
-static struct option arg_opts[] =
-{
-	{"verbose", no_argument, NULL, 'v'},
-	{ NULL, 0, NULL, 0 }
-};
-
-/* Process the arguments */
-int process_args(int argc, char **argv)
-{
-	int ch;
-
-	g_outfile = NULL;
-	g_infile = NULL;
-
-	ch = getopt_long(argc, argv, "v", arg_opts, NULL);
-	while(ch != -1)
-	{
-		switch(ch)
-		{
-			case 'v' : g_verbose = 1;
-					   break;
-			default  : break;
-		};
-
-		ch = getopt_long(argc, argv, "v", arg_opts, NULL);
-	}
-
-	argc -= optind;
-	argv += optind;
-
-	if(argc < 2)
-	{
-		return 0;
-	}
-
-	g_infile = argv[0];
-	g_outfile = argv[1];
-
-	if(g_verbose)
-	{
-		fprintf(stderr, "Loading %s, outputting to %s\n", g_infile, g_outfile);
-	}
-
-	return 1;
-}
 
 void print_help(void)
 {
@@ -1066,18 +1017,21 @@ void free_data(void)
 
 int main(int argc, char **argv)
 {
-	if(process_args(argc, argv))
-	{
-		if(load_elf(g_infile))
-		{
-			(void) output_prx(g_outfile);
-			free_data();
-		}
-	}
-	else
-	{
+	if (argc != 3)
 		print_help();
+
+	g_infile = argv[1];
+	g_outfile = argv[2];
+
+	if(g_verbose)
+		fprintf(stderr, "Loading %s, outputting to %s\n", g_infile, g_outfile);
+
+	if(load_elf(g_infile))
+	{
+		(void) output_prx(g_outfile);
+		free_data();
 	}
 
 	return 0;
 }
+
