@@ -5,4 +5,5 @@ Only tested on the open source pspsdk running on gcc 4.3.2, newer gcc will most 
 You can get a pspsdk running on gcc 4.3.2 from here https://github.com/PSP-Archive/ARK-4/tree/main/contrib/PC/PSPSDK
 
 ![Screenshot](img/prxpsp.png)
+![Screenshot](img/prxprofiler.png)
 ![Screenshot](img/prxemu.png)
